@@ -4,37 +4,40 @@
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20ARM64%20%7C%20AMD64-blue)](https://github.com/frhndevweb/hann-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`hann-cli` is a fast, lightweight developer and system utility CLI created by Farhan ("hann"). Built specifically for Linux environments, it features first-class detection and optimization for Ubuntu running inside **Termux + proot-distro** on Android ARM64 devices, as well as standard Linux servers and workstations (x86_64 and aarch64).
+`hann-cli` adalah developer & system utility CLI super ringan buatan Farhan ("hann"). CLI ini gw rancang khusus buat environment Linux, terutama buat lo yang sering ngoding di Ubuntu via **Termux + proot-distro** di Android ARM64, tapi tetep jalan lancar jaya di server atau PC Linux biasa (x86_64 & aarch64).
 
-Local-first, dependency-light, zero telemetry, and zero hardcoded system metrics.
-
----
-
-## Features
-
-- **System Diagnostics (`hann doctor`)**: Checks operating system distribution, architecture, kernel, shell, Termux/PRoot runtime indicators, and verifies your developer toolchain using real executable discovery (`exec.LookPath`).
-- **Real-Time System Metrics (`hann system`)**: Reads directly from `/proc/cpuinfo`, `/proc/meminfo`, and `/proc/uptime` without external APIs to display CPU cores, live memory consumption, uptime, and container metadata.
-- **Port Inspection (`hann ports`)**: Decodes Linux `/proc/net/tcp`, `/proc/net/tcp6`, `/proc/net/udp` tables and maps socket inodes to process names, with graceful fallbacks (`ss`, `netstat`, `lsof`) when permissions are restricted.
-- **Project Discovery (`hann projects`)**: Scans workspace directories up to depth limits to discover projects across Go, Node.js, Rust, Python, PHP, Flutter, Java, Gradle, CMake, and Git.
-- **Termux & PRoot Detection**: Accurately recognizes when running inside Android Termux or a PRoot chroot/distro environment.
-- **Clean Terminal UI**: Minimalist, human-readable output with adaptive colors (respects `NO_COLOR` and `TERM=dumb`) and automatic Unicode/ASCII fallback glyphs.
+100% local-first, minim dependensi, tanpa telemetri lebay, dan gak pake hardcoded info sistem abal-abal.
 
 ---
 
-## Installation
+## Fitur Utama
 
-### Prerequisites
+- **Cek Lingkungan Sistem (`hann doctor`)**: Ngedeteksi distro OS, arsitektur CPU, kernel, shell, indikator Termux/PRoot, plus ngecek ketersediaan toolchain koding lo pake executable lookup real (`exec.LookPath`).
+- **Metrik Sistem Real-Time (`hann system`)**: Baca langsung dari `/proc/cpuinfo`, `/proc/meminfo`, dan `/proc/uptime` tanpa API luar buat mantau core CPU, pemakaian RAM, uptime, dan info container lo.
+- **Inspeksi Port Listening (`hann ports`)**: Decode tabel `/proc/net/tcp`, `/proc/net/tcp6`, `/proc/net/udp` bawaan Linux dan mapping inode socket ke nama proses. Lengkap dengan fallback cerdas (`ss`, `netstat`, `lsof`) kalau permission di environment lo dibatesin.
+- **Discovery Project (`hann projects`)**: Nyari folder project kodingan di workspace lo (Go, Node.js, Rust, Python, PHP, Flutter, Java, Gradle, CMake, Git) secara teratur dengan batasan kedalaman folder yang aman.
+- **Deteksi Akurat Termux & PRoot**: Gak perlu nebak-nebak, CLI ini langsung tau kalo lo lagi jalan di dalem Termux atau PRoot distro.
+- **Terminal UI Rapi & Bersih**: Tampilan modern, adaptif warna (ngikut standar `NO_COLOR` dan `TERM=dumb`), plus fallback simbol Unicode/ASCII otomatis (`✓`/`[+]`, `✗`/`[-]`, `⚠`/`[!]`).
 
-- Go 1.22 or newer
+---
+
+## Cara Install
+
+### Persyaratan
+
+- Go 1.22 ke atas udah kepasang di mesin lo
 - Linux (x86_64, aarch64 / arm64)
 
-### Install via Go
+### Install via Go Install
 
+Kalo lo udah punya Go di sistem:
 ```bash
 go install github.com/frhndevweb/hann-cli@latest
 ```
 
-### Build from Source
+### Build Langsung dari Source
+
+Lo tinggal clone repo ini terus build pake Makefile:
 
 ```bash
 git clone https://github.com/frhndevweb/hann-cli.git
@@ -43,19 +46,21 @@ make build
 make install
 ```
 
-The compiled binary will be placed at `bin/hann` and copied to `~/.local/bin/hann`.
+Binary bakal ke-generate di `bin/hann` dan langsung disalin ke `~/.local/bin/hann`.
 
 ---
 
-## Usage & Examples
+## Cara Pake & Contoh Output
 
-### Overview
+### 1. Menu Utama
+
+Kalo lo jalanin `hann` tanpa argumen:
 
 ```bash
 hann
 ```
 
-Example output:
+Contoh tampilan yang bakal lo dapet:
 ```text
 hann-cli
 
@@ -79,15 +84,15 @@ Run hann [command] --help for detailed usage.
 
 ---
 
-### Environment & Tool Diagnostics (`hann doctor`)
+### 2. Cek Kesehatan Sistem & Toolchain (`hann doctor`)
 
-Verify system indicators and installed CLI developer packages:
+Jalanin perintah ini buat mastiin environment dan tool koding lo udah ready:
 
 ```bash
 hann doctor
 ```
 
-Example output:
+Contoh output di terminal lo:
 ```text
 Hann Doctor
 
@@ -120,15 +125,15 @@ Summary
 
 ---
 
-### Real-Time System Information (`hann system`)
+### 3. Pantau Resource Sistem (`hann system`)
 
-Inspect live resource statistics directly from Linux `/proc`:
+Buat ngeliat spesifikasi mesin, penggunaan memori real, dan uptime:
 
 ```bash
 hann system
 ```
 
-Example output:
+Contoh output:
 ```text
 Hann System
 
@@ -155,15 +160,15 @@ Directory
 
 ---
 
-### Port Inspection (`hann ports`)
+### 4. Cek Port yang Lagi Buka (`hann ports`)
 
-List active listening ports and resolved process names:
+Kalo lo lagi jalanin server web atau API dan pengen tau port mana aja yang lagi listening:
 
 ```bash
 hann ports
 ```
 
-Example output:
+Contoh output:
 ```text
 PORT    PROTOCOL    ADDRESS       PROCESS
 3000    TCP         0.0.0.0       node
@@ -171,25 +176,25 @@ PORT    PROTOCOL    ADDRESS       PROCESS
 8080    TCP         0.0.0.0       go
 ```
 
-To filter strictly listening sockets (enabled by default):
+Kalo lo mau filter khusus port yang statusnya listening:
 ```bash
 hann ports --listening
 ```
 
 > [!NOTE]
-> On unrooted Android/PRoot devices, Android SELinux may restrict direct reading of `/proc/net/tcp`. `hann-cli` will attempt fallback tools (`ss`, `netstat`, `lsof`) and reports human-friendly diagnostics without crashing.
+> Kalo lo jalanin di Android/PRoot tanpa akses root, Android SELinux sering ngeblok akses langsung ke `/proc/net/tcp`. Jangan panik, `hann-cli` bakal otomatis nyoba fallback (`ss`, `netstat`, `lsof`) dan ngasih panduan tanpa bikin terminal lo crash.
 
 ---
 
-### Workspace Project Discovery (`hann projects`)
+### 5. Temukan Project Kodingan (`hann projects`)
 
-Scan for development projects (defaulting to `~/projects`):
+CLI ini bisa nge-scan folder workspace lo buat nyari project apa aja yang ada di sana:
 
 ```bash
 hann projects
 ```
 
-Example output:
+Secara default, perintah di atas bakal ngecek folder `~/projects`. Contoh output:
 ```text
 Projects
 
@@ -201,7 +206,7 @@ Projects
 4.  security-tool        Python
 ```
 
-If the target directory does not exist:
+Kalo folder `~/projects` belum lo buat, CLI bakal ngasih panduan:
 ```text
 Projects directory not found:
 ~/projects
@@ -210,26 +215,29 @@ Create it with:
 mkdir -p ~/projects
 ```
 
-Scan a custom workspace path using `--path`:
+Kalo lo mau nge-scan folder workspace lain, tinggal pake opsi `--path`:
 ```bash
 hann projects --path ~/workspace
+hann projects --path .
 ```
 
 ---
 
-### Version Information (`hann version` or `hann --version`)
+### 6. Cek Versi Lengkap (`hann version`)
 
 ```bash
 hann version
+# atau
+hann --version
 ```
 
-Example output:
+Contoh output:
 ```text
 hann-cli
 
 Version:    0.1.0
-Commit:     a1b2c3d
-Built:      2026-10-07T15:30:00Z
+Commit:     80ad4eb
+Built:      2026-10-07T15:39:27Z
 Platform:   linux/arm64
 Go runtime: go1.26.0
 ```
@@ -238,21 +246,17 @@ Go runtime: go1.26.0
 
 ## Development & Testing
 
-### Running Tests
+Buat lo yang pengen ngembangin atau ngetes kodenya langsung:
 
-Run all unit tests across modules:
+### Jalanin Unit Test
 
 ```bash
 make test
-```
-
-Or using native Go tooling:
-
-```bash
+# atau manual:
 go test -v ./...
 ```
 
-### Code Formatting and Linting
+### Format & Linting Kode
 
 ```bash
 make fmt
@@ -261,17 +265,17 @@ make lint
 
 ---
 
-## Cross-Compilation
+## Kompilasi Silang (Cross-Compilation)
 
-`hann-cli` is written in standard Go with zero CGO dependencies, making cross-compilation straightforward.
+Project ini murni pake Go standard library tanpa CGO, jadi lo gampang banget build buat arsitektur lain.
 
-### Target: Linux ARM64 (aarch64 / Termux)
+### Buat Linux ARM64 (aarch64 / Termux Android)
 
 ```bash
 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o hann .
 ```
 
-### Target: Linux AMD64 (x86_64)
+### Buat Linux AMD64 (x86_64 PC/Server)
 
 ```bash
 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o hann .
@@ -279,23 +283,23 @@ GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o hann .
 
 ---
 
-## Security & Privacy
+## Keamanan & Privasi
 
-- **100% Local-First**: All diagnostics, hardware measurements, and workspace scans are processed entirely on your local machine.
-- **Zero Telemetry**: No metrics, tracking beacons, or network phone-homes are embedded.
-- **Safe Scanning**: Scans are bounded to specified workspace directories and explicitly skip hidden secret files, `.env` files, and private credentials.
-
----
-
-## Roadmap
-
-- [x] v0.1: Initial release with `doctor`, `system`, `ports`, `projects`, `version`
-- [ ] v0.2: Process tree inspector and kill utility for orphaned background dev servers
-- [ ] v0.3: Network latency and interface diagnostic submodule (`hann ping` / `hann net`)
-- [ ] v0.4: Package manager accelerator helpers for Termux apt mirrors
+- **Murni Local-First**: Semua pengecekan, pembacaan resource, dan scanning project dieksekusi 100% di mesin lo.
+- **Nol Telemetri**: Gak ada data yang dikirim ke server mana pun. Gak ada tracking tersembunyi.
+- **Scan Aman**: Scanner dibatesin hanya ke direktori yang lo tentuin dan otomatis ngeskip file rahasia kaya `.env`, file credentials, maupun folder sensitif lainnya.
 
 ---
 
-## License
+## Roadmap Pengembangan
 
-MIT License. Copyright (c) 2026 Farhan (frhndevweb). See [LICENSE](LICENSE) for details.
+- [x] v0.1: Rilis awal (`doctor`, `system`, `ports`, `projects`, `version`)
+- [ ] v0.2: Fitur killer proses server dev yang nyangkut di background Termux (`hann kill` / `hann ps`)
+- [ ] v0.3: Pengujian latensi jaringan dan benchmark mirror repositori apt Termux/Ubuntu (`hann ping` / `hann mirrors`)
+- [ ] v0.4: Helper optimasi storage dan cache di lingkungan PRoot
+
+---
+
+## Lisensi
+
+Dirilis di bawah lisensi [MIT](LICENSE). Hak Cipta (c) 2026 Farhan (frhndevweb). Bebas lo pake, modifikasi, dan kembangin sesuka hati!
